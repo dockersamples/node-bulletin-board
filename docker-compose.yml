@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+
+  bb-app:
+    image: sixeyed/bulletin-board-app
+    build:
+      context: ./bulletin-board-app
+    networks:
+      - bb-net
+      
+  bb-db:
+    image: sixeyed/bulletin-board-db
+    build:
+      context: ./bulletin-board-db
+    networks:
+      - bb-net
+
+  bb-proxy:
+    image: sixeyed/bulletin-board-proxy
+    build:
+      context: ./bulletin-board-proxy
+    ports:
+      - "80:80"
+    networks:
+      - bb-net
+
+networks:
+  bb-net:
