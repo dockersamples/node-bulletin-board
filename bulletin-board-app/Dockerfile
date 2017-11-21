@@ -9,4 +9,4 @@ CMD [ "npm", "start" ]
 
 COPY . .
 
-HEALTHCHECK CMD curl --fail http://localhost:8080 || exit 1  
+HEALTHCHECK --interval=5s CMD curl --fail http://localhost:8080 || exit 1  
