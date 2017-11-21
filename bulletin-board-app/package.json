@@ -11,10 +11,7 @@
     "express": "^4.13.3",
     "morgan": "^1.6.1",
     "vue": "^1.0.10",
-    "vue-resource": "^0.1.17",
-    "tedious": "^2.0.1",
-    "sequelize": "^4.20.1",
-    "prom-client": "^10.2.2"
+    "vue-resource": "^0.1.17"
   },
   "devDependencies": {
     "body-parser": "^1.14.1",
