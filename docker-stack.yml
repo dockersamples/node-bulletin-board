@@ -3,17 +3,17 @@ version: '3.3'
 services:
       
   bb-db:
-    image: ${dockerId}/bulletin-board-db
+    image: ${dockerId}/bulletin-board-db:v4
     networks:
       - bb-net
 
   bb-app:
-    image: ${dockerId}/bulletin-board-app
+    image: ${dockerId}/bulletin-board-app:v4
     networks:
       - bb-net
 
   bb-proxy:
-    image: ${dockerId}/bulletin-board-proxy
+    image: ${dockerId}/bulletin-board-proxy:v4
     ports:
       - "80:80"
     networks:
@@ -21,18 +21,6 @@ services:
     deploy:
       mode: replicated
       replicas: 3
-
-  bb-metrics:
-    image: ${dockerId}/bulletin-board-metrics
-    networks:
-      - bb-net
-
-  bb-dashboard:
-    image: ${dockerId}/bulletin-board-dashboard
-    ports:
-      - "3000:3000"
-    networks:
-      - bb-net
 
 networks:
   bb-net:
