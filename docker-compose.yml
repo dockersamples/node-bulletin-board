@@ -3,14 +3,14 @@ version: '3.3'
 services:
       
   bb-db:
-    image: ${dockerId}/bulletin-board-db:v5
+    image: ${dockerId:-dockersamples}/bulletin-board-db:v5
     build:
       context: ./bulletin-board-db
     networks:
       - bb-net
 
   bb-app:
-    image: ${dockerId}/bulletin-board-app:v5
+    image: ${dockerId:-dockersamples}/bulletin-board-app:v5
     build:
       context: ./bulletin-board-app
     depends_on:
@@ -20,7 +20,7 @@ services:
       - bb-net
 
   bb-proxy:
-    image: ${dockerId}/bulletin-board-proxy:v5
+    image: ${dockerId:-dockersamples}/bulletin-board-proxy:v5
     build:
       context: ./bulletin-board-proxy
     ports:
@@ -31,7 +31,7 @@ services:
       - bb-net
 
   bb-metrics:
-    image: ${dockerId}/bulletin-board-metrics:v5
+    image: ${dockerId:-dockersamples}/bulletin-board-metrics:v5
     build:
       context: ./bulletin-board-metrics
     depends_on:
@@ -40,7 +40,7 @@ services:
       - bb-net
 
   bb-dashboard:
-    image: ${dockerId}/bulletin-board-dashboard:v5
+    image: ${dockerId:-dockersamples}/bulletin-board-dashboard:v5
     build:
       context: ./bulletin-board-dashboard
     ports:
