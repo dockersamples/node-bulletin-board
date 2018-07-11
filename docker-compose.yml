@@ -1,0 +1,54 @@
+version: '3.3'
+
+services:
+      
+  bb-db:
+    image: ${dockerId:-dockersamples}/bulletin-board-db:v5
+    build:
+      context: ./bulletin-board-db
+    networks:
+      - bb-net
+
+  bb-app:
+    image: ${dockerId:-dockersamples}/bulletin-board-app:v5
+    build:
+      context: ./bulletin-board-app
+    depends_on:
+      - bb-db
+    restart: on-failure
+    networks:
+      - bb-net
+
+  bb-proxy:
+    image: ${dockerId:-dockersamples}/bulletin-board-proxy:v5
+    build:
+      context: ./bulletin-board-proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - bb-app
+    networks:
+      - bb-net
+
+  bb-metrics:
+    image: ${dockerId:-dockersamples}/bulletin-board-metrics:v5
+    build:
+      context: ./bulletin-board-metrics
+    depends_on:
+      - bb-app
+    networks:
+      - bb-net
+
+  bb-dashboard:
+    image: ${dockerId:-dockersamples}/bulletin-board-dashboard:v5
+    build:
+      context: ./bulletin-board-dashboard
+    ports:
+      - "3000:3000"
+    depends_on:
+      - bb-metrics
+    networks:
+      - bb-net
+
+networks:
+  bb-net:
