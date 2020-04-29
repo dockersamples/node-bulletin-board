@@ -1,6 +1,6 @@
 var Sequelize = require('sequelize');
 var username = 'sa';
-var password = 'DockerCon!!!';
+var password = 'D0cker2*2*';
 var host = 'bb-db';
 var dbName = 'BulletinBoard';
 
