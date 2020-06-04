@@ -1,4 +1,4 @@
-FROM node:current-slim
+FROM ubuntu:18.04
 
 WORKDIR /usr/src/app
 COPY package.json .
