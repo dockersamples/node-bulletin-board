@@ -2,7 +2,7 @@ module.exports = [
     {
       id: 1,
       title: 'Docker Workshop',
-      detail: 'Linuxing in Lonodon ',
+      detail: 'Linuxing in London ',
       date: '2017-11-21'
     },
     {
