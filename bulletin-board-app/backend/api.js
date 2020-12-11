@@ -1,6 +1,7 @@
 var events = require('./events.js');
 
 exports.events = function (req, res) {
+  console.log('Hello world!');
   res.json(events);
 };
 
