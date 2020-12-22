@@ -13,6 +13,7 @@ variables:
     
 pool:
   vmImage: 'ubuntu-16.04'
+
 stages:
 - stage: Build
   displayName: Build image
@@ -27,3 +28,13 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/bulletin-board-app/Dockerfile'
         tags: |
           $(tag)
+    - task: Docker@2
+      displayName: Push image
+      inputs:
+        containerRegistry: |
+          $(dockerHub)
+        repository: $(imageName)
+        command: push
+        tags: |
+          test1
+          test2
