@@ -10,7 +10,10 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
-    
+  containerRegistry: 'docker.io'
+  dockerRegistryServiceConnection: 'a3fc7400-78df-4a14-ba41-1fdbfeea6656'
+  imageRepository: 'kula4ud3e/bulletinboard'
+
 pool:
   vmImage: 'ubuntu-16.04'
 
@@ -25,16 +28,16 @@ stages:
       displayName: Build an image
       inputs:
         command: build
+        repository: $(imageRepository)
         dockerfile: '$(Build.SourcesDirectory)/bulletin-board-app/Dockerfile'
+        containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
     - task: Docker@2
-      displayName: Push image
+      displayName: Push an image to container registry
       inputs:
-        containerRegistry: |
-          $(dockerHub)
-        repository: $(imageName)
         command: push
+        repository: $(imageRepository)
+        containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
-          test1
-          test2
+          $(tag)
