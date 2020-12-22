@@ -1,0 +1,43 @@
+# Docker
+# Build a Docker image 
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+  containerRegistry: 'docker.io'
+  dockerRegistryServiceConnection: 'a3fc7400-78df-4a14-ba41-1fdbfeea6656'
+  imageRepository: 'kula4ud3e/bulletinboard'
+
+pool:
+  vmImage: 'ubuntu-16.04'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:  
+  - job: Build
+    displayName: Build
+    steps:
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: build
+        repository: $(imageRepository)
+        dockerfile: '$(Build.SourcesDirectory)/bulletin-board-app/Dockerfile'
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+    - task: Docker@2
+      displayName: Push an image to container registry
+      inputs:
+        command: push
+        repository: $(imageRepository)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
