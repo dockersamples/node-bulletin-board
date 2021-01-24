@@ -26,3 +26,4 @@ jobs:
         uses: mathieudutour/github-tag-action@v5.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: $GITHUB_RUN_NUMBER
