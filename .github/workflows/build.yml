@@ -43,6 +43,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - 
+        name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"  
       -
         name: Build and push
         id: docker_build
@@ -51,8 +56,8 @@ jobs:
           push: true
           tags: jvanhent/node-bulletin-board:${{ github.run_number }}
           build-args: |
-            GITHUB_SHA=${{ GITHUB_SHA }}
-            GITHUB_REF=${{ GITHUB_REF }}
+            GITHUB_SHA=${{ github.sha }}
+            GITHUB_REF=${{ github.ref }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
