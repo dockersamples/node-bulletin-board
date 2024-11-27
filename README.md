@@ -10,6 +10,9 @@ Change the directory to `node-bulletin-board` and follow the commands:
 2. Run `node server.js`.
 3. Visit [http://localhost:8080](http://localhost:8080).
 
+   <img width="1199" alt="image" src="https://github.com/user-attachments/assets/2cf0d1b5-5dde-491c-a158-8425df4576c5">
+
+
 ## RESTful API (contributed by Jason Lam)
 
 1. **Use Node.js & Express for backend server and router.**
