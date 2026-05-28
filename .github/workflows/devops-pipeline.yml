@@ -1,0 +1,60 @@
+name: DevOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "dev" ]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  pipeline-global:
+    name: Validation DevSecOps et Build Docker
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 1. Analyse de Qualité Code
+      - name: Analyse SonarCloud
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.organization=mohamedkhemaissia
+            -Dsonar.projectKey=mohamedkhemaissia_node-bulletin-board
+            -Dsonar.projectName=node-bulletin-board
+            -Dsonar.sources=bulletin-board-app
+
+      # 2. Scan de Sécurité - Bloquant en cas de faille Critique
+      - name: Scanner le code avec Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: 'bulletin-board-app'
+          format: 'table'
+          exit-code: '1' # <-- TRÈS IMPORTANT : Fait échouer le pipeline si une faille est trouvée
+          severity: 'CRITICAL' # <-- On bloque uniquement sur le niveau le plus dangereux pour l'entreprise
+
+      # 3. Connexion au Registre GitHub (GHCR)
+      - name: Connexion au Registre GitHub (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 4. Build et Push de l'image Docker
+      - name: Build et Push de l'image Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: ./bulletin-board-app
+          push: true
+          tags: |
+            ghcr.io/mohamedkhemaissia/node-bulletin-board:latest

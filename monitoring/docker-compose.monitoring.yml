@@ -1,0 +1,20 @@
+services:
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: bulletin-board-prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - '9090:9090'
+
+  grafana:
+    image: grafana/grafana-oss:11.1.4
+    container_name: bulletin-board-grafana
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
