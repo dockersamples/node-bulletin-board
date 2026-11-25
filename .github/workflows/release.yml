@@ -16,10 +16,6 @@ on:
         required: true
         type: string
 
-defaults:
-  run:
-    working-directory: bulletin-board-app/iac
-
 env:
   AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
   AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
@@ -47,13 +43,17 @@ jobs:
           terraform_version: 1.9.8
 
       - name: Terraform Init
+        working-directory: bulletin-board-app/iac
         run: terraform init
 
       - name: Terraform Plan
+        working-directory: bulletin-board-app/iac
         run: terraform plan -out=tfplan
 
       - name: Terraform Apply
+        working-directory: bulletin-board-app/iac
         run: terraform apply --auto-approve tfplan
 
       - name: Verify Release
+        working-directory: bulletin-board-app/iac
         run: terraform output
