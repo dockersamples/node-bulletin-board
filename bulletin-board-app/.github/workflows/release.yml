@@ -1,0 +1,71 @@
+name: Release Infrastructure with Terraform
+
+on:
+  workflow_dispatch:
+    inputs:
+      aws_access_key_id:
+        description: "AWS Lab Access Key ID"
+        required: true
+        type: string
+      aws_secret_access_key:
+        description: "AWS Lab Secret Access Key"
+        required: true
+        type: string
+      aws_session_token:
+        description: "AWS Lab Session Token"
+        required: true
+        type: string
+
+defaults:
+  run:
+    working-directory: iac
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+  AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
+  AWS_DEFAULT_REGION: us-west-2
+
+jobs:
+  deploy-infrastructure:
+    name: Provision AWS Infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mask AWS Session Credentials
+        run: |
+          echo "::add-mask::${{ inputs.aws_access_key_id }}"
+          echo "::add-mask::${{ inputs.aws_secret_access_key }}"
+          echo "::add-mask::${{ inputs.aws_session_token }}"
+
+      - name: Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Validate Terraform Formatting and Syntax
+        run: |
+          terraform fmt -check -recursive
+          terraform init -backend=false
+          terraform validate
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+
+      - name: Verify Deployed Infrastructure
+        run: |
+          terraform output
+          INSTANCE_ID=$(terraform output -raw instance_id)
+          aws ec2 describe-instances \
+            --instance-ids "$INSTANCE_ID" \
+            --query "Reservations[0].Instances[0].{ID:InstanceId,State:State.Name,PublicIP:PublicIpAddress}" \
+            --output table
